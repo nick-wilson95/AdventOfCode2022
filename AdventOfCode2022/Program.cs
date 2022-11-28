@@ -1,3 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using AdventOfCode2022.Solutions.Days;
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine(new TestDay().Solve());
+
+Console.ReadKey();
