@@ -1,14 +1,16 @@
 ﻿namespace AdventOfCode2022.Solutions;
 
-public abstract class Day
+public abstract class Day<TInput>
 {
     protected abstract string InputFileName { get; }
 
     public string Solve()
     {
         var input = File.ReadAllLines($"Solutions/Input/{InputFileName}.txt");
-        return Solve(input);
+        return Solve(Parse(input));
     }
 
-    protected abstract string Solve(string[] input);
+    protected abstract TInput Parse(string[] input);
+
+    protected abstract string Solve(TInput input);
 }

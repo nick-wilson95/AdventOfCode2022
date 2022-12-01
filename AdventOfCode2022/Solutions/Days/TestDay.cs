@@ -1,14 +1,17 @@
 ﻿namespace AdventOfCode2022.Solutions.Days;
 
-public class TestDay : Day
+public class TestDay : Day<int[]>
 {
     protected override string InputFileName => "test";
     
-    protected override string Solve(string[] input)
+    protected override int[] Parse(string[] input)
     {
-        return input.SelectMany(x => x.Split(", "))
-            .Select(int.Parse)
-            .Sum()
+        return input.Select(int.Parse).ToArray();
+    }
+
+    protected override string Solve(int[] input)
+    {
+        return input.Sum()
             .ToString();
     }
 }
