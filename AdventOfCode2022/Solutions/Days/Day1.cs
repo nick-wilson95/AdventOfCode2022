@@ -2,17 +2,17 @@
 
 namespace AdventOfCode2022.Solutions.Days;
 
-public class Day1 : Day<IEnumerable<int?>>
+public class Day1 : Day<IEnumerable<IEnumerable<int>>>
 {
     protected override string InputFileName => "day1";
 
-    protected override IEnumerable<int?> Parse(string[] input) =>
-        input.Select(x => int.TryParse(x, out var value) ? (int?)value : null);
+    protected override IEnumerable<IEnumerable<int>> Parse(string[] input) =>
+        input.Split(string.Empty)
+            .Select(x => x.Select(int.Parse));
 
-    protected override string Solve(IEnumerable<int?> input)
+    protected override string Solve(IEnumerable<IEnumerable<int>> input)
     {
-        return input.Split(null)
-            .Select(x => (int)x.Sum())
+        return input.Select(x => x.Sum())
             .Order()
             .TakeLast(3)
             .Sum()

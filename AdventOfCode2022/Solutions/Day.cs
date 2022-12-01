@@ -6,7 +6,7 @@ public abstract class Day<TInput>
 
     public string Solve()
     {
-        var input = File.ReadAllLines($"Solutions/Input/{InputFileName}.txt");
+        var input = File.ReadAllLines($"Solutions/Inputs/{InputFileName}.txt");
         return Solve(Parse(input));
     }
 
