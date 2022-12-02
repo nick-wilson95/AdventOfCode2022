@@ -1,30 +1,28 @@
-﻿using static AdventOfCode2022.Solutions.Days.Day2;
+﻿using AdventOfCode2022.Extensions;
+using static AdventOfCode2022.Solutions.Days.Day2;
 using static AdventOfCode2022.Solutions.Days.Day2.Option;
+using static AdventOfCode2022.Solutions.Days.Day2.Outcome;
 
 namespace AdventOfCode2022.Solutions.Days;
 
-public class Day2 : Day<IEnumerable<(Option,Option)>>
+public class Day2 : Day<IEnumerable<(Option,Outcome)>>
 {
     protected override string InputFileName => "day2";
     
     public enum Option { Rock, Paper, Scissors }
+    public enum Outcome { Lose, Draw, Win }
 
-    protected override IEnumerable<(Option, Option)> Parse(string[] input) =>
+    protected override IEnumerable<(Option, Outcome)> Parse(string[] input) =>
         input.Select(x => (
             x[0] switch { 'A' => Rock, 'B' => Paper, 'C' => Scissors },
-            x[2] switch { 'X' => Rock, 'Y' => Paper, 'Z' => Scissors }
+            x[2] switch { 'X' => Lose, 'Y' => Draw, 'Z' => Win }
         ));
 
-    protected override string Solve(IEnumerable<(Option,Option)> input)
+    protected override string Solve(IEnumerable<(Option,Outcome)> input)
     {
-        int ShapePoints((Option, Option) x) => (int)x.Item2 + 1;
+        int ShapePoints((Option, Outcome) x) => ((int)x.Item1 + (int)x.Item2 - 1).Mod(3) + 1;
 
-        int OutcomePoints((Option, Option) x) => x switch
-        {
-            (Rock, Paper) or (Paper, Scissors) or (Scissors, Rock) => 6,
-            (Rock, Rock) or (Paper, Paper) or (Scissors, Scissors) => 3,
-            _ => 0,
-        };
+        int OutcomePoints((Option, Outcome) x) => x.Item2 switch { Lose => 0, Draw => 3, Win => 6 };
 
         return input.Select(x => ShapePoints(x) + OutcomePoints(x))
             .Sum()
