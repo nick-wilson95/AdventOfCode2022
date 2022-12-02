@@ -1,14 +1,14 @@
-﻿namespace AdventOfCode2022.Solutions.Extensions;
+﻿namespace AdventOfCode2022.Extensions;
 
 public static class ArrayExtensions
 {
-    public static List<List<T>> Split<T>(this IEnumerable<T> input, T splitOn)
+    public static List<List<T>> Split<T>(this IEnumerable<T> input, Func<T, bool> splitOn)
     {
         var result = new List<List<T>>{ new() };
 
         input.ToList().ForEach(x =>
         {
-            if (x.Equals(splitOn))
+            if (splitOn(x))
             {
                 result.Add(new List<T>());
             }

@@ -1,4 +1,4 @@
-﻿using AdventOfCode2022.Solutions.Extensions;
+﻿using AdventOfCode2022.Extensions;
 
 namespace AdventOfCode2022.Solutions.Days;
 
@@ -7,7 +7,7 @@ public class Day1 : Day<IEnumerable<IEnumerable<int>>>
     protected override string InputFileName => "day1";
 
     protected override IEnumerable<IEnumerable<int>> Parse(string[] input) =>
-        input.Split(string.Empty)
+        input.Split(x => x == string.Empty)
             .Select(x => x.Select(int.Parse));
 
     protected override string Solve(IEnumerable<IEnumerable<int>> input)
