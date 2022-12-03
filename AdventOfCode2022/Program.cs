@@ -1,5 +1,5 @@
 ﻿using AdventOfCode2022.Solutions.Days;
 
-Console.WriteLine(new Day1().Solve());
+Console.WriteLine(new Day3().Solve());
 
 Console.ReadKey();
