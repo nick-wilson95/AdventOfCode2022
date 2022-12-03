@@ -1,25 +1,20 @@
 ﻿namespace AdventOfCode2022.Solutions.Days;
 
-public class Day3 : Day<IEnumerable<(HashSet<char>,HashSet<char>)>>
+public class Day3 : Day<IEnumerable<HashSet<char>>>
 {
     protected override string InputFileName => "day3";
     
-    protected override IEnumerable<(HashSet<char>,HashSet<char>)> Parse(string[] input)
-    {
-        return input.Select(x =>
-        (
-            x[..(x.Length/2)].ToHashSet(),
-            x[(x.Length/2)..].ToHashSet()
-        ));
-    }
+    protected override IEnumerable<HashSet<char>> Parse(string[] input) =>
+        input.Select(x => x.ToHashSet());
 
-    protected override string Solve(IEnumerable<(HashSet<char>,HashSet<char>)> input)
+    protected override string Solve(IEnumerable<HashSet<char>> input)
     {
         int Map(char x) => x < 97
             ? x % 32 + 26
             : x % 32;
-
-        return input.Select(x => x.Item1.Intersect(x.Item2).Single())
+        
+        return input.Chunk(3)
+            .Select(x => x[0].Intersect(x[1]).Intersect(x[2]).Single())
             .Select(Map)
             .Sum()
             .ToString();
