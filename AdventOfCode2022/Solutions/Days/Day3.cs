@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2022.Solutions.Days;
+﻿using AdventOfCode2022.Utils;
+
+namespace AdventOfCode2022.Solutions.Days;
 
 public class Day3 : Day<IEnumerable<HashSet<char>>>
 {
@@ -14,7 +16,7 @@ public class Day3 : Day<IEnumerable<HashSet<char>>>
             : x % 32;
         
         return input.Chunk(3)
-            .Select(x => x[0].Intersect(x[1]).Intersect(x[2]).Single())
+            .Select(x => Set.Intersection(x).Single())
             .Select(Map)
             .Sum()
             .ToString();
