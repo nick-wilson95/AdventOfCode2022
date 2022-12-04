@@ -15,8 +15,7 @@ public class Day4 : Day<IEnumerable<(Range,Range)>>
 
     protected override string Solve(IEnumerable<(Range,Range)> input)
     {
-        return input.Count(x =>
-                x.Item1.Contains(x.Item2) || x.Item2.Contains(x.Item1))
+        return input.Count(x => x.Item1.Overlaps(x.Item2))
             .ToString();
     }
 }
