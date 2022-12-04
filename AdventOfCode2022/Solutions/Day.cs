@@ -7,10 +7,10 @@ public abstract class Day<TInput>
     public string Solve()
     {
         var input = File.ReadAllLines($"Solutions/Inputs/{InputFileName}.txt");
-        return Solve(Parse(input));
+        return Solve(Parse(input)).ToString();
     }
 
     protected abstract TInput Parse(string[] input);
 
-    protected abstract string Solve(TInput input);
+    protected abstract int Solve(TInput input);
 }

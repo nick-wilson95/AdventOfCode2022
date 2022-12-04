@@ -18,14 +18,13 @@ public class Day2 : Day<IEnumerable<(Option,Outcome)>>
             x[2] switch { 'X' => Lose, 'Y' => Draw, 'Z' => Win }
         ));
 
-    protected override string Solve(IEnumerable<(Option,Outcome)> input)
+    protected override int Solve(IEnumerable<(Option,Outcome)> input)
     {
         int ShapePoints((Option, Outcome) x) => ((int)x.Item1 + (int)x.Item2 - 1).Mod(3) + 1;
 
         int OutcomePoints((Option, Outcome) x) => x.Item2 switch { Lose => 0, Draw => 3, Win => 6 };
 
         return input.Select(x => ShapePoints(x) + OutcomePoints(x))
-            .Sum()
-            .ToString();
+            .Sum();
     }
 }
