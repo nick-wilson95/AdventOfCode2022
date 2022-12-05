@@ -12,5 +12,5 @@ public abstract class Day<TInput>
 
     protected abstract TInput Parse(string[] input);
 
-    protected abstract int Solve(TInput input);
+    protected abstract object Solve(TInput input);
 }

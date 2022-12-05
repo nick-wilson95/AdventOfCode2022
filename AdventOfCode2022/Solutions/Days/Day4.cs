@@ -14,6 +14,6 @@ public class Day4 : Day<IEnumerable<(IntRange,IntRange)>>
             .Select(x => x.Select(int.Parse).ToList())
             .Select(x => (new IntRange(x[0],x[1]), new IntRange(x[2],x[3])));
 
-    protected override int Solve(IEnumerable<(IntRange, IntRange)> input) =>
+    protected override object Solve(IEnumerable<(IntRange, IntRange)> input) =>
         input.Count(x => x.Item1.Overlaps(x.Item2));
 }
