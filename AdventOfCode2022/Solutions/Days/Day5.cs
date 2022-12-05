@@ -4,13 +4,13 @@ using Array = AdventOfCode2022.Utils.Array;
 namespace AdventOfCode2022.Solutions.Days;
 
 public record StackInstructions(Stack<char>[] Stacks,
-    List<(int repeats, int fromIndex, int toIndex)> Instructions) {}
+    List<(int count, int fromIndex, int toIndex)> Instructions) {}
 
 public class Day5 : Day<StackInstructions>
 {
     protected override string InputFileName => "day5";
 
-    protected override StackInstructions Parse(string[] input)
+    protected override StackInstructions Parse(IEnumerable<string> input)
     {
         var inputParts = input.Split(x => x == string.Empty);
 
@@ -24,11 +24,10 @@ public class Day5 : Day<StackInstructions>
     {
         input.Instructions.ForEach(x =>
         {
-            for (var i = 0; i < x.repeats; i++)
-            {
-                var popped = input.Stacks[x.fromIndex - 1].Pop();
-                input.Stacks[x.toIndex - 1].Push(popped);
-            }
+            var fromStack = input.Stacks[x.fromIndex - 1];
+            var toStack = input.Stacks[x.toIndex - 1];
+            
+            fromStack.ShiftSubstack(x.count, toStack);
         });
 
         var topLayer = input.Stacks.Select(x => x.Peek());

@@ -9,7 +9,7 @@ public class Day4 : Day<IEnumerable<(IntRange,IntRange)>>
 {
     protected override string InputFileName => "day4";
     
-    protected override IEnumerable<(IntRange,IntRange)> Parse(string[] input) =>
+    protected override IEnumerable<(IntRange,IntRange)> Parse(IEnumerable<string> input) =>
         input.Select(x => x.Split(',','-'))
             .Select(x => x.Select(int.Parse).ToList())
             .Select(x => (new IntRange(x[0],x[1]), new IntRange(x[2],x[3])));

@@ -10,7 +10,9 @@ public abstract class Day<TInput>
         return Solve(Parse(input)).ToString();
     }
 
-    protected abstract TInput Parse(string[] input);
+    // No holds barred string wrangling
+    protected abstract TInput Parse(IEnumerable<string> input);
 
+    // This bit should be clean
     protected abstract object Solve(TInput input);
 }

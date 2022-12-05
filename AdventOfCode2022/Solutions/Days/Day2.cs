@@ -12,7 +12,7 @@ public class Day2 : Day<IEnumerable<(Option,Outcome)>>
     public enum Option { Rock, Paper, Scissors }
     public enum Outcome { Lose, Draw, Win }
 
-    protected override IEnumerable<(Option, Outcome)> Parse(string[] input) =>
+    protected override IEnumerable<(Option, Outcome)> Parse(IEnumerable<string> input) =>
         input.Select(x => (
             x[0] switch { 'A' => Rock, 'B' => Paper, 'C' => Scissors },
             x[2] switch { 'X' => Lose, 'Y' => Draw, 'Z' => Win }

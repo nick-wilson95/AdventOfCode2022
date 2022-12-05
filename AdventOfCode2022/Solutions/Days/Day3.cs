@@ -6,7 +6,7 @@ public class Day3 : Day<IEnumerable<HashSet<char>>>
 {
     protected override string InputFileName => "day3";
     
-    protected override IEnumerable<HashSet<char>> Parse(string[] input) =>
+    protected override IEnumerable<HashSet<char>> Parse(IEnumerable<string> input) =>
         input.Select(x => x.ToHashSet());
 
     protected override object Solve(IEnumerable<HashSet<char>> input)

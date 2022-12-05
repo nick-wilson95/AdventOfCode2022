@@ -6,7 +6,7 @@ public class Day1 : Day<IEnumerable<IEnumerable<int>>>
 {
     protected override string InputFileName => "day1";
 
-    protected override IEnumerable<IEnumerable<int>> Parse(string[] input) =>
+    protected override IEnumerable<IEnumerable<int>> Parse(IEnumerable<string> input) =>
         input.Split(x => x == string.Empty)
             .Select(x => x.Select(int.Parse));
 
