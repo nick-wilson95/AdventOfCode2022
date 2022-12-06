@@ -15,21 +15,17 @@ public class Day6 : Day<string>
         var earliestPossibleMarker = 0;
 
         for (var i = (MarkerSize - 1); i < input.Length; i++)
+        for (var j = 1; j < MarkerSize; j++)
         {
-            var nextChar = input[i];
-
-            for (var j = 1; j < MarkerSize; j++)
+            if (currentSubstr[j - 1] == input[i])
             {
-                if (currentSubstr[j - 1] == nextChar)
-                {
-                    earliestPossibleMarker = Math.Max(earliestPossibleMarker, i + j);
-                }
+                earliestPossibleMarker = Math.Max(earliestPossibleMarker, i + j);
             }
 
             if (earliestPossibleMarker < i + 1) return i + 1;
             
             currentSubstr.RemoveAt(0);
-            currentSubstr.Add(nextChar);
+            currentSubstr.Add(input[i]);
         }
 
         throw new Exception();
