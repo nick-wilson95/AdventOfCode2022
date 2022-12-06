@@ -2,7 +2,7 @@
 
 public class Day6 : Day<string>
 {
-    private const int MarkerSize = 4;
+    private const int MarkerSize = 14;
     
     protected override string InputFileName => "day6";
 
