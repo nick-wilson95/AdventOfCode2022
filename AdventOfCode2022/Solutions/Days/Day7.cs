@@ -13,16 +13,16 @@ public class Day7 : Day<Directory>
     
     protected override Directory Parse(IEnumerable<string> input)
     {
-        var rootNode = new Directory{Parent = null};
+        var rootNode = new Directory{ Parent = null };
         var currentNode = rootNode;
-        
+
         foreach (var line in input)
         {
-            if (line == "$ ls") continue;
-            if (line == "$ cd /") currentNode = rootNode;
-            else if (line == "$ cd ..") currentNode = currentNode.Parent;
+            if (line is "$ ls") continue;
+            if (line is "$ cd /") currentNode = rootNode;
+            else if (line is "$ cd ..") currentNode = currentNode.Parent;
             else if (line is ['$', ' ', 'c', 'd', ' ', .. var to]) currentNode = currentNode.Children[to];
-            else if (line is ['d', 'i', 'r', ' ', .. var dir]) currentNode.Children.Add(dir, new Directory{Parent = currentNode});
+            else if (line is ['d', 'i', 'r', ' ', .. var dir]) currentNode.Children.Add(dir, new Directory{ Parent = currentNode });
             else
             {
                 var lineParts = line.Split(' ');
