@@ -35,17 +35,17 @@ public class Day7 : Day<Directory>
 
     protected override object Solve(Directory input)
     {
-        var sizeSum = 0;
+        var sizes = new List<int>();
         
-        int RecursivelyCheckSizes(Directory dir, int maxSize)
+        int RecursivelyCheckSizes(Directory dir)
         {
-            var size = dir.Files.Values.Sum() + dir.Children.Sum(x => RecursivelyCheckSizes(x.Value, maxSize));
-            if (size <= maxSize) sizeSum += size;
+            var size = dir.Files.Values.Sum() + dir.Children.Sum(x => RecursivelyCheckSizes(x.Value));
+            sizes.Add(size);
             return size;
         }
 
-        RecursivelyCheckSizes(input, 100_000);
+        var totalSize = RecursivelyCheckSizes(input);
 
-        return sizeSum;
+        return sizes.Order().First(x => 40_000_000 >= totalSize - x);
     }
 }
