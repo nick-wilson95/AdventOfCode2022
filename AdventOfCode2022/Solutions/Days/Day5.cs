@@ -1,5 +1,4 @@
-﻿using AdventOfCode2022.Extensions;
-using Array = AdventOfCode2022.Utils.Array;
+﻿using Array = AdventOfCode2022.Utils.Array;
 
 namespace AdventOfCode2022.Solutions.Days;
 

@@ -1,5 +1,4 @@
-﻿using AdventOfCode2022.Extensions;
-using static AdventOfCode2022.Solutions.Days.Day2;
+﻿using static AdventOfCode2022.Solutions.Days.Day2;
 using static AdventOfCode2022.Solutions.Days.Day2.Option;
 using static AdventOfCode2022.Solutions.Days.Day2.Outcome;
 

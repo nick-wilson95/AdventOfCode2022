@@ -1,6 +1,4 @@
-﻿using AdventOfCode2022.Extensions;
-
-namespace AdventOfCode2022.Solutions.Days;
+﻿namespace AdventOfCode2022.Solutions.Days;
 
 public class Day1 : Day<IEnumerable<IEnumerable<int>>>
 {
