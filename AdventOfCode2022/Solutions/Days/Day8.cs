@@ -16,48 +16,54 @@ public class Day8 : Day<int[][]>
     {
         var (gridHeight, gridWidth) = (input.Length, input.First().Length);
         
-        var visibilityMatrix = Array.Of(_ => new bool[gridWidth], gridHeight);
+        var scenicScores = Array.Of(_ => Array.Of(_ => 1, gridWidth), gridHeight);
 
-        for (var i = 0; i < gridHeight; i++)
+        for (var i = 1; i < gridHeight - 1; i++)
         {
-            var currentMaxFromLeft = -1;
-            var currentMaxFromRight = -1;
-            
-            for (var j = 0; j < gridWidth; j++)
+            for (var j = 1; j < gridWidth - 1; j++)
             {
-                if (input[i][j] > currentMaxFromLeft)
+                for (var k = j - 1; k >= 0; k--)
                 {
-                    currentMaxFromLeft = input[i][j];
-                    visibilityMatrix[i][j] = true;
+                    if (input[i][k] >= input[i][j] || k == 0)
+                    {
+                        scenicScores[i][j] *= j - k;
+                        break;
+                    }
                 }
-                if (input[i][gridWidth - j - 1] > currentMaxFromRight)
+                for (var k = j + 1; k < gridWidth; k++)
                 {
-                    currentMaxFromRight = input[i][gridWidth - j - 1];
-                    visibilityMatrix[i][gridWidth - j - 1] = true;
+                    if (input[i][k] >= input[i][j] || k == gridWidth - 1)
+                    {
+                        scenicScores[i][j] *= k - j;
+                        break;
+                    }
                 }
             }
         }
 
-        for (var j = 0; j < gridWidth; j++)
+        for (var i = 1; i < gridWidth - 1; i++)
         {
-            var currentMaxFromTop = -1;
-            var currentMaxFromBottom = -1;
-            
-            for (var i = 0; i < gridHeight; i++)
+            for (var j = 1; j < gridHeight - 1; j++)
             {
-                if (input[i][j] > currentMaxFromTop)
+                for (var k = i - 1; k >= 0; k--)
                 {
-                    currentMaxFromTop = input[i][j];
-                    visibilityMatrix[i][j] = true;
+                    if (input[k][j] >= input[i][j] || k == 0)
+                    {
+                        scenicScores[i][j] *= i - k;
+                        break;
+                    }
                 }
-                if (input[gridHeight - i - 1][j] > currentMaxFromBottom)
+                for (var k = i + 1; k < gridHeight; k++)
                 {
-                    currentMaxFromBottom = input[gridHeight - i - 1][j];
-                    visibilityMatrix[gridHeight - i - 1][j] = true;
+                    if (input[k][j] >= input[i][j] || k == gridHeight - 1)
+                    {
+                        scenicScores[i][j] *= k - i;
+                        break;
+                    }
                 }
             }
         }
 
-        return visibilityMatrix.SelectMany(x => x).Count(x => x);
+        return scenicScores.SelectMany(x => x).Max();
     }
 }
