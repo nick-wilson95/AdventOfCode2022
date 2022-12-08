@@ -19,47 +19,38 @@ public class Day8 : Day<int[][]>
         var scenicScores = Array.Of(_ => Array.Of(_ => 1, gridWidth), gridHeight);
 
         for (var i = 1; i < gridHeight - 1; i++)
+        for (var j = 1; j < gridWidth - 1; j++)
         {
-            for (var j = 1; j < gridWidth - 1; j++)
+            for (var k = j - 1; k >= 0; k--)
             {
-                for (var k = j - 1; k >= 0; k--)
+                if (input[i][k] >= input[i][j] || k == 0)
                 {
-                    if (input[i][k] >= input[i][j] || k == 0)
-                    {
-                        scenicScores[i][j] *= j - k;
-                        break;
-                    }
-                }
-                for (var k = j + 1; k < gridWidth; k++)
-                {
-                    if (input[i][k] >= input[i][j] || k == gridWidth - 1)
-                    {
-                        scenicScores[i][j] *= k - j;
-                        break;
-                    }
+                    scenicScores[i][j] *= j - k;
+                    break;
                 }
             }
-        }
-
-        for (var i = 1; i < gridWidth - 1; i++)
-        {
-            for (var j = 1; j < gridHeight - 1; j++)
+            for (var k = j + 1; k < gridWidth; k++)
             {
-                for (var k = i - 1; k >= 0; k--)
+                if (input[i][k] >= input[i][j] || k == gridWidth - 1)
                 {
-                    if (input[k][j] >= input[i][j] || k == 0)
-                    {
-                        scenicScores[i][j] *= i - k;
-                        break;
-                    }
+                    scenicScores[i][j] *= k - j;
+                    break;
                 }
-                for (var k = i + 1; k < gridHeight; k++)
+            }
+            for (var k = i - 1; k >= 0; k--)
+            {
+                if (input[k][j] >= input[i][j] || k == 0)
                 {
-                    if (input[k][j] >= input[i][j] || k == gridHeight - 1)
-                    {
-                        scenicScores[i][j] *= k - i;
-                        break;
-                    }
+                    scenicScores[i][j] *= i - k;
+                    break;
+                }
+            }
+            for (var k = i + 1; k < gridHeight; k++)
+            {
+                if (input[k][j] >= input[i][j] || k == gridHeight - 1)
+                {
+                    scenicScores[i][j] *= k - i;
+                    break;
                 }
             }
         }
