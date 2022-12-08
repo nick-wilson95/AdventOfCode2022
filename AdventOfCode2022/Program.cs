@@ -1,3 +1,4 @@
-﻿using AdventOfCode2022.Solutions.Days;
+﻿global using AdventOfCode2022.Utils;
+using AdventOfCode2022.Solutions.Days;
 
-Console.WriteLine(new Day7().Solve());
+Console.WriteLine(new Day8().Solve());

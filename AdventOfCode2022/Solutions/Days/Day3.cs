@@ -1,6 +1,4 @@
-﻿using AdventOfCode2022.Utils;
-
-namespace AdventOfCode2022.Solutions.Days;
+﻿namespace AdventOfCode2022.Solutions.Days;
 
 public class Day3 : Day<IEnumerable<HashSet<char>>>
 {
