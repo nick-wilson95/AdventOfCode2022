@@ -21,35 +21,35 @@ public class Day8 : Day<int[][]>
         for (var i = 1; i < gridHeight - 1; i++)
         for (var j = 1; j < gridWidth - 1; j++)
         {
-            for (var k = j - 1; k >= 0; k--)
+            for (var n = j - 1;; n--)
             {
-                if (input[i][k] >= input[i][j] || k == 0)
+                if (input[i][n] >= input[i][j] || n == 0)
                 {
-                    scenicScores[i][j] *= j - k;
+                    scenicScores[i][j] *= j - n;
                     break;
                 }
             }
-            for (var k = j + 1; k < gridWidth; k++)
+            for (var n = j + 1;; n++)
             {
-                if (input[i][k] >= input[i][j] || k == gridWidth - 1)
+                if (input[i][n] >= input[i][j] || n == gridWidth - 1)
                 {
-                    scenicScores[i][j] *= k - j;
+                    scenicScores[i][j] *= n - j;
                     break;
                 }
             }
-            for (var k = i - 1; k >= 0; k--)
+            for (var n = i - 1;; n--)
             {
-                if (input[k][j] >= input[i][j] || k == 0)
+                if (input[n][j] >= input[i][j] || n == 0)
                 {
-                    scenicScores[i][j] *= i - k;
+                    scenicScores[i][j] *= i - n;
                     break;
                 }
             }
-            for (var k = i + 1; k < gridHeight; k++)
+            for (var n = i + 1;; n++)
             {
-                if (input[k][j] >= input[i][j] || k == gridHeight - 1)
+                if (input[n][j] >= input[i][j] || n == gridHeight - 1)
                 {
-                    scenicScores[i][j] *= k - i;
+                    scenicScores[i][j] *= n - i;
                     break;
                 }
             }
