@@ -21,6 +21,7 @@ public class DayTests
             ConfirmResult<Day6>("2334");
             ConfirmResult<Day7>("5756764");
             ConfirmResult<Day8>("201684");
+            ConfirmResult<Day9>("2376");
         }
     }
 

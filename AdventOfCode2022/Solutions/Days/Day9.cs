@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2022.Solutions.Days;
+﻿using Array = AdventOfCode2022.Utils.Array;
+
+namespace AdventOfCode2022.Solutions.Days;
 
 public class Day9 : Day<IEnumerable<(char direction, int steps)>>
 {
@@ -10,10 +12,9 @@ public class Day9 : Day<IEnumerable<(char direction, int steps)>>
 
     protected override object Solve(IEnumerable<(char direction, int steps)> input)
     {
-        (int X, int Y) head = (0,0);
-        (int X, int Y) tail = (0,0);
+        (int X, int Y)[] knots = Array.Of(_ => (0,0), 10);
 
-        var tailVisited = new HashSet<(int,int)> { tail };
+        var tailVisited = new HashSet<(int,int)> { knots.Last() };
 
         int StepToward(int from, int target) => (target - from) switch
         {
@@ -23,20 +24,21 @@ public class Day9 : Day<IEnumerable<(char direction, int steps)>>
         };
 
         foreach (var move in input)
-        {
             for (var i = 0; i < move.steps; i++)
             {
-                head.X += move.direction switch { 'L' => -1, 'R' => 1, _ => 0 };
-                head.Y += move.direction switch { 'D' => -1, 'U' => 1, _ => 0 };
+                knots[0].X += move.direction switch { 'L' => -1, 'R' => 1, _ => 0 };
+                knots[0].Y += move.direction switch { 'D' => -1, 'U' => 1, _ => 0 };
 
-                if (Math.Abs(head.X - tail.X) <= 1 && Math.Abs(head.Y - tail.Y) <= 1) continue;
-                
-                tail.X = StepToward(tail.X, head.X);
-                tail.Y = StepToward(tail.Y, head.Y);
-                
-                tailVisited.Add(tail); 
+                for (var k = 1; k < knots.Length; k++)
+                {
+                    if (Math.Abs(knots[k-1].X - knots[k].X) <= 1 && Math.Abs(knots[k-1].Y - knots[k].Y) <= 1) continue;
+            
+                    knots[k].X = StepToward(knots[k].X, knots[k-1].X);
+                    knots[k].Y = StepToward(knots[k].Y, knots[k-1].Y);
+                }
+            
+                tailVisited.Add(knots.Last()); 
             }
-        }
 
         return tailVisited.Count;
     }
