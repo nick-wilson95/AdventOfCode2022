@@ -21,6 +21,6 @@ public class Day10 : Day<IEnumerable<int>>
             .Chunk(40)
             .Take(6)
             .Select(x => new string(x))
-            .Aggregate((x,y) => x + "\r\n" + y);
+            .Aggregate((x,y) => x + "\n" + y);
     }
 }

@@ -22,14 +22,15 @@ public class DayTests
             ConfirmResult<Day7>("5756764");
             ConfirmResult<Day8>("201684");
             ConfirmResult<Day9>("2376");
-            ConfirmResult<Day10>(FromFile("day10_expected"));
+            ConfirmResultFromFile<Day10>("day10_expected");
         }
     }
-
-    private static string FromFile(string fileName) => File.ReadAllText($"Expected/{fileName}.txt");
 
     private static void ConfirmResult<T>(string expected) where T : Day, new() =>
         new T().Solve()
             .Should()
             .Be(expected, $"that is correct for {typeof(T).Name}");
+
+    private static void ConfirmResultFromFile<T>(string fileName) where T : Day, new() =>
+        ConfirmResult<T>(File.ReadAllText($"Expected/{fileName}.txt").Replace("\r\n", "\n"));
 }
