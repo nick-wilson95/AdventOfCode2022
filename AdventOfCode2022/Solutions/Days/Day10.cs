@@ -1,31 +1,26 @@
-﻿using Array = AdventOfCode2022.Utils.Array;
+﻿namespace AdventOfCode2022.Solutions.Days;
 
-namespace AdventOfCode2022.Solutions.Days;
-
-public class Day10 : Day<List<int>>
+public class Day10 : Day<IEnumerable<int>>
 {
     protected override string InputFileName => "day10";
     
-    protected override List<int> Parse(IEnumerable<string> input)
+    protected override IEnumerable<int> Parse(IEnumerable<string> input)
     {
-        var result = new List<int>{1};
+        int GetValue(string line) => int.Parse(line.Split(' ').Last());
 
-        foreach (var line in input)
-        {
-            result.Add(result.Last());
-            if (line == "noop") continue;
-            
-            var lineValue = int.Parse(line.Split(' ').Last());
-            result.Add(result.Last() + lineValue);
-        }
-
-        return result;
+        return input.SelectMany(x => x == "noop"
+                ? new[] { 0 }
+                : new[] { 0, GetValue(x) })
+            .Prepend(1)
+            .Cumulate();
     }
 
-    protected override object Solve(List<int> input)
+    protected override object Solve(IEnumerable<int> input)
     {
-        return Array.Of(i => 20 + 40 * i, 6)
-            .Select(x => x * input[x - 1])
-            .Sum();
+        return input.Select((y, i) => Math.Abs(y - i % 40) <= 1 ? '#' : '.')
+            .Chunk(40)
+            .Take(6)
+            .Select(x => new string(x))
+            .Aggregate((x,y) => x + "\r\n" + y);
     }
 }

@@ -22,8 +22,11 @@ public class DayTests
             ConfirmResult<Day7>("5756764");
             ConfirmResult<Day8>("201684");
             ConfirmResult<Day9>("2376");
+            ConfirmResult<Day10>(FromFile("day10_expected"));
         }
     }
+
+    private static string FromFile(string fileName) => File.ReadAllText($"Expected/{fileName}.txt");
 
     private static void ConfirmResult<T>(string expected) where T : Day, new() =>
         new T().Solve()
