@@ -15,12 +15,10 @@ public class Day10 : Day<IEnumerable<int>>
             .Cumulate();
     }
 
-    protected override object Solve(IEnumerable<int> input)
-    {
-        return input.Select((y, i) => Math.Abs(y - i % 40) <= 1 ? '#' : '.')
+    protected override object Solve(IEnumerable<int> input) =>
+        input.Select((y, i) => Math.Abs(y - i % 40) <= 1 ? '#' : '.')
             .Chunk(40)
             .Take(6)
             .Select(x => new string(x))
             .Aggregate((x,y) => x + "\n" + y);
-    }
 }
