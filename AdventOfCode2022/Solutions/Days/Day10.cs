@@ -8,7 +8,7 @@ public class Day10 : Day<IEnumerable<int>>
     {
         int GetValue(string line) => int.Parse(line.Split(' ').Last());
 
-        return input.SelectMany(x => x == "noop"
+        return input.SelectMany(x => x is "noop"
                 ? new[] { 0 }
                 : new[] { 0, GetValue(x) })
             .Prepend(1)
