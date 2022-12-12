@@ -37,40 +37,21 @@ public class Day12 : Day<Day12.MapInput>
 
     protected override object Solve(MapInput input)
     {
-        var possibleStarts = new List<(int, int)>();
-        
-        for (var i = 0; i < input.Grid.Length; i++)
-        for (var j = 0; j < input.Grid.First().Length; j++)
-        {
-            if (input.Grid[i][j] != 1) continue;
-
-            if (GetAdjacent(input.Grid, (i, j)).Any(x => input.Grid[x.i][x.j] == 2))
-            {
-                possibleStarts.Add((i,j));
-            }
-        }
-
-        return possibleStarts.Select(x => GetLeastSteps(input with { Start = x }))
-            .Min();
-    }
-
-    private static int GetLeastSteps(MapInput input)
-    {
         var stepsTaken = 0;
 
         var visited = new HashSet<(int i, int j)>();
-        var lastStep = new HashSet<(int i, int j)> { input.Start };
+        var lastStep = new HashSet<(int i, int j)> { input.Target };
         
         bool CanStep((int i, int j) from, (int i, int j) to)
         {
-            var lowEnough = input.Grid[to.i][to.j] <= input.Grid[from.i][from.j] + 1;
+            var highEnough = input.Grid[to.i][to.j] >= input.Grid[from.i][from.j] - 1;
 
-            return lowEnough && !visited.Contains(to);
+            return highEnough && !visited.Contains(to);
         }
 
         while (true)
         {
-            if (lastStep.Contains(input.Target)) return stepsTaken;
+            if (lastStep.Any(x => input.Grid[x.i][x.j] == 1)) return stepsTaken;
 
             var thisStep = new HashSet<(int i, int j)>();
 
