@@ -25,6 +25,7 @@ public class DayTests
             ConfirmResultFromFile<Day10>("day10_expected");
             ConfirmResult<Day11>("54832778815");
             ConfirmResult<Day12>("480");
+            ConfirmResult<Day13>("21922");
         }
     }
 
