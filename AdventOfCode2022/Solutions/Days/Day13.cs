@@ -1,18 +1,27 @@
 ﻿namespace AdventOfCode2022.Solutions.Days;
 
-public class Day13 : Day<IEnumerable<(string,string)>>
+public class Day13 : Day<IEnumerable<string>>
 {
     protected override string InputFileName => "day13";
 
-    protected override IEnumerable<(string, string)> Parse(IEnumerable<string> input) =>
-        input.Split(x => x == string.Empty)
-            .Select(x => (x[0], x[1]));
+    protected override IEnumerable<string> Parse(IEnumerable<string> input) =>
+        input.Where(x => x != string.Empty);
 
-    protected override object Solve(IEnumerable<(string, string)> input) =>
-        input.Select(x => OrderCorrect(x.Item1, x.Item2) != false)
-            .Select((isCorrect, index) => (isCorrect, index))
-            .Where(x => x.isCorrect)
-            .Sum(x => x.index + 1);
+    protected override object Solve(IEnumerable<string> input)
+    {
+        var divider1 = "[[2]]";
+        var divider2 = "[[6]]";
+
+        var comparer = Comparer<string>.Create((x, y) => OrderCorrect(x, y) == true ? -1 : 1);
+        
+        var orderedLines = input
+            .Concat(new[] { divider1, divider2 })
+            .Order(comparer)
+            .ToList();
+
+        return (1 + orderedLines.IndexOf(divider1))
+               * (1 + orderedLines.IndexOf(divider2));
+    }
 
     private static bool? OrderCorrect(string item1, string item2)
     {
