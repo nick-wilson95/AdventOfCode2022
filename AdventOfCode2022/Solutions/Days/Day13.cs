@@ -9,50 +9,45 @@ public class Day13 : Day<IEnumerable<string>>
 
     protected override object Solve(IEnumerable<string> input)
     {
-        var divider1 = "[[2]]";
-        var divider2 = "[[6]]";
-
-        var comparer = Comparer<string>.Create((x, y) => OrderCorrect(x, y) == true ? -1 : 1);
+        var dividers = new[] { "[[2]]", "[[6]]"};
         
         var orderedLines = input
-            .Concat(new[] { divider1, divider2 })
-            .Order(comparer)
+            .Concat(dividers)
+            .Order(Comparer<string>.Create(Comparer))
             .ToList();
 
-        return (1 + orderedLines.IndexOf(divider1))
-               * (1 + orderedLines.IndexOf(divider2));
+        return dividers.Select(x => orderedLines.IndexOf(x) + 1)
+            .Product();
     }
 
-    private static bool? OrderCorrect(string item1, string item2)
+    // Returns:
+    //  -1 if item1 is before item2
+    //  1 if item1 is after item2
+    //  0 otherwise
+    private static int Comparer(string item1, string item2)
     {
         var integerItem1 = int.TryParse(item1, out var value1);
         var integerItem2 = int.TryParse(item2, out var value2);
 
         if (integerItem1 && integerItem2)
-        {
-            return (value2 - value1) switch
-            {
-                < 0 => false,
-                > 0 => true,
-                0 => null
-            };
-        }
-        if (integerItem1) return OrderCorrect($"[{value1}]", item2);
-        if (integerItem2) return OrderCorrect(item1, $"[{value2}]");
+            return Math.Clamp(value1 - value2, -1, 1);
+        
+        if (integerItem1) return Comparer($"[{value1}]", item2);
+        if (integerItem2) return Comparer(item1, $"[{value2}]");
 
         var elements1 = GetElements(item1);
         var elements2 = GetElements(item2);
 
         for (var i = 0; i < elements1.Count; i++)
         {
-            if (i >= elements2.Count) return false;
+            if (i >= elements2.Count) return 1;
 
-            var orderCorrect = OrderCorrect(elements1[i], elements2[i]);
+            var comparison = Comparer(elements1[i], elements2[i]);
 
-            if (orderCorrect.HasValue) return orderCorrect;
+            if (comparison != 0) return comparison;
         }
 
-        return elements1.Count < elements2.Count ? true : null;
+        return elements1.Count < elements2.Count ? -1 : 0;
     }
 
     private static List<string> GetElements(string chars)

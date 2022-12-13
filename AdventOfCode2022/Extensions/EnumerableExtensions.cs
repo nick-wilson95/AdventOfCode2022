@@ -33,4 +33,7 @@ public static class EnumerableExtensions
 
         return result;
     }
+
+    public static T Product<T>(this IEnumerable<T> input) where T : INumber<T>
+        => input.Aggregate(T.One, (x, y) => x * y);
 }

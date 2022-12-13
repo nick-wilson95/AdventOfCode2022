@@ -66,6 +66,6 @@ public class Day11 : Day<Monkey[]>
         return input.Select(x => x.NumInspections)
             .Order()
             .TakeLast(2)
-            .Aggregate(BigInteger.One, (x, y) => x * y);
+            .Product();
     }
 }
