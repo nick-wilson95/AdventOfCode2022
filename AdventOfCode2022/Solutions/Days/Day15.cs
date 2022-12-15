@@ -1,16 +1,18 @@
-﻿namespace AdventOfCode2022.Solutions.Days;
+﻿using System.Numerics;
+
+namespace AdventOfCode2022.Solutions.Days;
 
 public record SensorData((int x, int y) Sensor, (int x, int y) ClosestBeacon)
 {
-    public int DistanceFromClosest = Math.Abs(Sensor.x - ClosestBeacon.x) + Math.Abs(Sensor.y - ClosestBeacon.y);
-    public int DistanceFromRow2Mil = Math.Abs(Sensor.y - 2_000_000);
+    public readonly int DistanceFromClosest = Math.Abs(Sensor.x - ClosestBeacon.x) + Math.Abs(Sensor.y - ClosestBeacon.y);
+    public int DistanceFromRow(int row) => Math.Abs(Sensor.y - row);
 }
 
-public class Day15 : Day<IEnumerable<SensorData>>
+public class Day15 : Day<List<SensorData>>
 {
     protected override string InputFileName => "day15";
     
-    protected override IEnumerable<SensorData> Parse(IEnumerable<string> input)
+    protected override List<SensorData> Parse(IEnumerable<string> input)
     {
         return input.Select(line =>
         {
@@ -25,25 +27,63 @@ public class Day15 : Day<IEnumerable<SensorData>>
                 (salientParts[0], salientParts[1]),
                 (salientParts[2], salientParts[3])
             );
-        });
+        }).ToList();
     }
 
-    protected override object Solve(IEnumerable<SensorData> input)
+    protected override object Solve(List<SensorData> input)
     {
-        var beaconlessSections = input
-            .Where(x => x.DistanceFromRow2Mil <= x.DistanceFromClosest)
-            .Select(data =>
+        input = input.OrderByDescending(x => x.DistanceFromClosest).ToList();
+
+        var lastSkipSequence = new List<SensorData>();
+
+        var useSkipSequence = false;
+
+        var y = 0;
+
+        while (true)
+        {
+            startOuterLoop:
+            
+            var x = 0;
+            
+            while (true)
             {
-                var difference = data.DistanceFromClosest - data.DistanceFromRow2Mil;
-                return (data.Sensor.x - difference, data.Sensor.x + difference);
-            });
+                startInnerLoop:
+                
+                if (x > 4_000_000)
+                {
+                    y++;
+                    useSkipSequence = true;
+                    goto startOuterLoop;
+                }
 
-        var beaconsOnRow2Mil = input.Select(x => x.ClosestBeacon)
-            .Distinct()
-            .Count(x => x.y == 2_000_000);
+                var useInput = useSkipSequence ? lastSkipSequence : input;
 
-        return beaconlessSections.SelectMany(x => Enumerable.Range(x.Item1, x.Item2 - x.Item1 + 1))
-            .Distinct()
-            .Count() - beaconsOnRow2Mil;
+                foreach (var data in useInput)
+                {
+                    var difference = data.DistanceFromClosest - data.DistanceFromRow(y);
+                    
+                    if (difference < 0) continue;
+
+                    if (data.Sensor.x - difference <= x && data.Sensor.x + difference >= x)
+                    {
+                        x = data.Sensor.x + difference + 1;
+                        
+                        if (!useSkipSequence) lastSkipSequence.Add(data);
+                        
+                        goto startInnerLoop;
+                    }
+                }
+
+                if (useSkipSequence)
+                {
+                    useSkipSequence = false;
+                    lastSkipSequence.Clear();
+                    goto startOuterLoop;
+                }
+                
+                return new BigInteger(4_000_000) * new BigInteger(x) + new BigInteger(y);
+            }
+        }
     }
 }
