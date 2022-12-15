@@ -1,12 +1,10 @@
 ﻿namespace AdventOfCode2022.Solutions.Days;
 
-public class Day14 : Day<Day14.CaveData>
+public class Day14 : Day<char[,]>
 {
     protected override string InputFileName => "day14";
     
-    public record CaveData(char[,] Walls, (int i, int j) Source){}
-    
-    protected override CaveData Parse(IEnumerable<string> input)
+    protected override char[,] Parse(IEnumerable<string> input)
     {
         (int i,int j) ParseCoordinate(string input)
         {
@@ -16,16 +14,11 @@ public class Day14 : Day<Day14.CaveData>
 
         var walls = input.Select(line => line.Split(" -> ").Select(ParseCoordinate));
 
-        var wallEnds = walls.SelectMany(x => x);
-        var minX = wallEnds.Min(x => x.i);
-        var maxX = wallEnds.Max(x => x.i);
-        var maxY = wallEnds.Max(x => x.j);
-
-        var xOffset = minX - 1;
+        var maxY = walls.SelectMany(x => x).Max(x => x.j);
         
         var wallSections = walls.SelectMany(x => x.SkipLast(1).Zip(x.Skip(1)));
 
-        var wallGrid = new char[maxX - minX + 2, maxY + 2];
+        var wallGrid = new char[1000, maxY + 3];
 
         foreach (var section in wallSections)
         {
@@ -40,7 +33,7 @@ public class Day14 : Day<Day14.CaveData>
 
                 for (var j = startY; j <= endY; j++)
                 {
-                    wallGrid[from.i - xOffset, j] = '#';
+                    wallGrid[from.i, j] = '#';
                 }
             }
             else
@@ -50,41 +43,42 @@ public class Day14 : Day<Day14.CaveData>
 
                 for (var i = startX; i <= endX; i++)
                 {
-                    wallGrid[i - xOffset, to.j] = '#';
+                    wallGrid[i, to.j] = '#';
                 }
             }
         }
 
-        return new CaveData(wallGrid, (500 - xOffset, 0));
+        for (var i = 0; i < 1000; i++) wallGrid[i, maxY + 2] = '#';
+
+        return wallGrid;
     }
 
-    protected override object Solve(CaveData input)
+    protected override object Solve(char[,] input)
     {
         var particlesAtRest = 0;
-        var length = input.Walls.GetLength(1);
         
         while (true)
         {
-            var pos = input.Source;
+            (int i, int j) pos = (500, 0);
 
             while (true)
             {
-                if (pos.j >= length - 1)
-                {
-                    Render(input.Walls);
-                    return particlesAtRest;
-                }
-                
-                if (input.Walls[pos.i, pos.j + 1] == default) pos.j++;
-                else if (input.Walls[pos.i - 1, pos.j + 1] == default) pos = (pos.i - 1, pos.j + 1);
-                else if (input.Walls[pos.i + 1, pos.j + 1] == default) pos = (pos.i + 1, pos.j + 1);
+                if (input[pos.i, pos.j + 1] == default) pos.j++;
+                else if (input[pos.i - 1, pos.j + 1] == default) pos = (pos.i - 1, pos.j + 1);
+                else if (input[pos.i + 1, pos.j + 1] == default) pos = (pos.i + 1, pos.j + 1);
                 else {
-                    input.Walls[pos.i, pos.j] = 'O';
+                    input[pos.i, pos.j] = 'O';
+                    particlesAtRest++;
+
+                    if (pos == (500, 0))
+                    {
+                        //Render(input); //Uncomment the start of this line to render the final output
+                        return particlesAtRest;
+                    }
+                    
                     break;
                 }
             }
-            
-            particlesAtRest++;
         }
     }
 
