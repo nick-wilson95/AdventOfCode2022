@@ -35,15 +35,12 @@ public class Day15 : Day<List<SensorData>>
         input = input.OrderByDescending(x => x.DistanceFromClosest).ToList();
 
         var lastSkipSequence = new List<SensorData>();
-
         var useSkipSequence = false;
 
         var y = 0;
 
         while (true)
         {
-            startOuterLoop:
-            
             var x = 0;
             
             while (true)
@@ -54,7 +51,7 @@ public class Day15 : Day<List<SensorData>>
                 {
                     y++;
                     useSkipSequence = true;
-                    goto startOuterLoop;
+                    break;
                 }
 
                 var useInput = useSkipSequence ? lastSkipSequence : input;
@@ -79,7 +76,7 @@ public class Day15 : Day<List<SensorData>>
                 {
                     useSkipSequence = false;
                     lastSkipSequence.Clear();
-                    goto startOuterLoop;
+                    break;
                 }
                 
                 return new BigInteger(4_000_000) * new BigInteger(x) + new BigInteger(y);
