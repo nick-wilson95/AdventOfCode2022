@@ -86,6 +86,10 @@ public class Day16 : Day<Dictionary<string,ValveData>>
 
             if (pressureReleased > best)
             {
+                if (pressureReleased == 2114)
+                {
+                    var a = 1;
+                }
                 Console.WriteLine($"new best: {pressureReleased}");
                 best = pressureReleased;
             }
