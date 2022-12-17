@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode2022.Solutions.Days;
 
-// See graph http://graphonline.ru/en/?graph=CBKSHhtMsDiAmGgL
+// See graph described by input data - http://graphonline.ru/en/?graph=CBKSHhtMsDiAmGgL
 public record ValveData(int FlowRate, List<string> Connections);
 
 public class Day16 : Day<Dictionary<string,ValveData>>
@@ -116,6 +116,7 @@ public class Day16 : Day<Dictionary<string,ValveData>>
             .ToDictionary(x => x.Key, x => x.Value);
 
         var best = 0;
+        
         Parallel.ForEach(goodScores, x =>
         {
             var bestForScore = scores.Where(kvp => !kvp.Key.Overlaps(x.Key))
