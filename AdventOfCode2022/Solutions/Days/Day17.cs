@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2022.Solutions.Days;
+﻿using System.Numerics;
+
+namespace AdventOfCode2022.Solutions.Days;
 
 public class Day17 : Day<Queue<char>>
 {
@@ -21,21 +23,42 @@ public class Day17 : Day<Queue<char>>
         var jetsUsed = 0;
         
         var chamber = new List<int[]>();
+
+        var scoresForIndices = new Dictionary<(int shapeIndex, int jetIndex), List<(int shapeCount, int score)>>();
         
         for (var i = 0;; i++)
         {
             var shapeIndex = i % _shapes.Count;
+            var jetIndex = jetsUsed % jetQueueLength;
+
+            var indexExists = scoresForIndices.TryGetValue((shapeIndex, jetIndex), out var data);
+            
+            if (indexExists
+                && data.Count >= 2
+                && chamber.Count - data[^1].score == data[^1].score - data[^2].score)
+            {
+                var preLoopData = data[^2];
+                var loopData = data[^1];
+                
+                var loopScore = loopData.score - preLoopData.score;
+                var loopShapeCount = loopData.shapeCount - preLoopData.shapeCount;
+
+                var totalShapeCount = BigInteger.Parse("1000000000000");
+                var numLoops = totalShapeCount / loopShapeCount;
+
+                var postLoopShapeCount = totalShapeCount - numLoops * loopShapeCount - preLoopData.shapeCount;
+                var loopBookendScore = scoresForIndices.Values.SelectMany(x => x)
+                    .Single(x => x.shapeCount == preLoopData.shapeCount + postLoopShapeCount).score;
+
+                return numLoops * loopScore + loopBookendScore;
+            }
+
+            if (indexExists) data.Add((i, chamber.Count));
+            else scoresForIndices.Add((shapeIndex, jetIndex), new List<(int shapeCount, int score)>{(i, chamber.Count)});
+
             var shape = _shapes[shapeIndex];
             Drop(input, chamber, shape, () => jetsUsed++);
         }
-        
-        // To solve part 2, I realised the tower was repeating every 1740 drops from 1737 drops.
-        // 1,000,000,000,000 = 1737 + 574,712,642 * 1740 + 1183
-        // So the tower height will be:
-        //  The height after block 1737 (2714)
-        //  + the 574,712,642 * the repeating section height (2724)
-        //  + the extra height after a further 1183 blocks (1860)
-        //  = 1,565,517,241,382
     }
 
     private static void Drop(Queue<char> jets, List<int[]> chamber, int[,] shape, Action onJetUse)
