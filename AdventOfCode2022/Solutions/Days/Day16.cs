@@ -62,68 +62,68 @@ public class Day16 : Day<Dictionary<string,ValveData>>
             distances.Remove((kvp.Key, first));
             distances.Remove((kvp.Key, second));
         }
-        var best = 0;
-
-        void PostScore(List<string> path)
-        {
-            var visited = new HashSet<string>();
-
-            var elapsed = 0;
-
-            var pressureReleased = 0;
+        
+        input.Select(x => x.Value.Connections).ToList().ForEach(x => x.RemoveAll(y => y == "AA"));
+        
+        var scores = new Dictionary<HashSet<string>, int>(HashSet<string>.CreateSetComparer());
             
-            for (var i = 1; i < path.Count(); i++)
-            {
-                elapsed += distances[(path[i - 1], path[i])];
-
-                if (!visited.Contains(path[i]))
-                {
-                    elapsed++;
-                    visited.Add(path[i]);
-                    pressureReleased += (30 - elapsed) * input[path[i]].FlowRate;
-                }
-            }
-
-            if (pressureReleased > best)
-            {
-                if (pressureReleased == 2114)
-                {
-                    var a = 1;
-                }
-                Console.WriteLine($"new best: {pressureReleased}");
-                best = pressureReleased;
-            }
-        }
-            
-        void Recurse(int elapsed, IEnumerable<string> path)
+        void Recurse(int elapsed, int totalP, int pps, string currentValve, HashSet<string> opened)
         {
-            var currentValve = path.Last();
-
             var connections = input[currentValve].Connections;
+
+            if (currentValve != "AA" && !opened.Contains(currentValve))
+            {
+                Recurse(
+                    elapsed + 1,
+                    totalP + pps,
+                    pps + input[currentValve].FlowRate,
+                    currentValve,
+                    opened.Concat(new []{currentValve}).ToHashSet());
+            }
 
             var canMove = false;
             
             foreach (var valve in connections)
             {
                 var distance = distances[(currentValve, valve)];
-                if (elapsed + distance + 1 >= 30) continue;
-                canMove = true;
+                if (elapsed + distance + 1 >= 26) continue;
 
-                if (path.Contains(valve))
-                {
-                    Recurse(elapsed + distance, path.Concat(new[] { valve }));
-                }
-                else
-                {
-                    Recurse(elapsed + distance + 1, path.Concat(new[] { valve }));
-                }
+                Recurse(
+                    elapsed + distance,
+                    totalP + distance * pps,
+                    pps,
+                    valve,
+                    opened);
+                
+                canMove = true;
 
             }
 
-            if (!canMove) PostScore(path.ToList());
+            if (canMove) return;
+            
+            var total = totalP + (26 - elapsed) * pps;
+
+            if (!scores.TryGetValue(opened, out var best) || best < total)
+            {
+                scores[opened] = total;
+            }
         }
 
-        Recurse(0, new List<string>{"AA"});
+        Recurse(0, 0, 0, "AA", new HashSet<string>());
+
+        var topScore = scores.Values.Max();
+        var goodScores = scores.Where(x => x.Value > topScore / 2)
+            .ToDictionary(x => x.Key, x => x.Value);
+
+        var best = 0;
+        Parallel.ForEach(goodScores, x =>
+        {
+            var bestForScore = scores.Where(kvp => !kvp.Key.Overlaps(x.Key))
+                .Select(kvp => kvp.Value + x.Value)
+                .Max();
+
+            if (bestForScore > best) best = bestForScore;
+        });
 
         return best;
     }
