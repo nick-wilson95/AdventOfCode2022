@@ -4,7 +4,7 @@ public class Day17 : Day<Queue<char>>
 {
     protected override string InputFileName => "day17";
 
-    private List<int[,]> _shapes = new()
+    private readonly List<int[,]> _shapes = new()
     {
         new[,] { {1,1,1,1} },
         new[,] { {0,1,0}, {1,1,1}, {0,1,0} },
@@ -17,24 +17,36 @@ public class Day17 : Day<Queue<char>>
 
     protected override object Solve(Queue<char> input)
     {
+        var jetQueueLength = input.Count;
+        var jetsUsed = 0;
+        
         var chamber = new List<int[]>();
         
-        for (var i = 0; i < 2022; i++)
+        for (var i = 0;; i++)
         {
-            var shape = _shapes[i % _shapes.Count];
-            Drop(input, chamber, shape);
+            var shapeIndex = i % _shapes.Count;
+            var shape = _shapes[shapeIndex];
+            Drop(input, chamber, shape, () => jetsUsed++);
         }
-
-        return chamber.Count;
+        
+        // To solve part 2, I realised the tower was repeating every 1740 drops from 1737 drops.
+        // 1,000,000,000,000 = 1737 + 574,712,642 * 1740 + 1183
+        // So the tower height will be:
+        //  The height after block 1737 (2714)
+        //  + the 574,712,642 * the repeating section height (2724)
+        //  + the extra height after a further 1183 blocks (1860)
+        //  = 1,565,517,241,382
     }
 
-    private static void Drop(Queue<char> jets, List<int[]> chamber, int[,] shape)
+    private static void Drop(Queue<char> jets, List<int[]> chamber, int[,] shape, Action onJetUse)
     {
         (int x, int y) pos = (2, chamber.Count + 3);
 
         while (true)
         {
             var jet = jets.Dequeue();
+            onJetUse();
+            
             jets.Enqueue(jet);
             var newX = jet == '>' ? pos.x + 1 : pos.x - 1;
             var newPos = (newX, pos.y);
