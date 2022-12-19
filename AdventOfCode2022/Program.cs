@@ -2,4 +2,4 @@
 global using AdventOfCode2022.Extensions;
 using AdventOfCode2022.Solutions.Days;
 
-Console.WriteLine(new Day18().Solve());
+Console.WriteLine(new Day19().Solve());
