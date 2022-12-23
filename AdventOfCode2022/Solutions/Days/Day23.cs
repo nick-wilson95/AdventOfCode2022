@@ -92,7 +92,8 @@ public class Day23 : Day<Elf[]>
             }
 
             var moves = newLocations.Where(x => x.Value.Count() == 1);
-            var moveCount = moves.Count();
+
+            if (!moves.Any()) return repeat;
 
             foreach (var kvp in moves)
             {
@@ -100,14 +101,6 @@ public class Day23 : Day<Elf[]>
                 elf.X = kvp.Key.x;
                 elf.Y = kvp.Key.y;
             }
-
-            if (repeat == 10)
-            {
-                var rectSize = (input.Max(elf => elf.X) - input.Min(elf => elf.X) + 1)
-                    * (input.Max(elf => elf.Y) - input.Min(elf => elf.Y) + 1);
-
-                return rectSize - input.Count();
-            };
 
             firstDirection = (firstDirection + 1) % 4;
         }
