@@ -19,7 +19,7 @@ public class Day23 : Day<Elf[]>
         for (var y = 0; y < map.Length; y++)
         for (var x = 0; x < map[0].Length; x ++)
         {
-            if (map[y][x] == '#')locations.Add(new Elf { X = x, Y = y });
+            if (map[y][x] == '#') locations.Add(new Elf { X = x, Y = y });
         }
 
         return locations.ToArray();
@@ -31,33 +31,31 @@ public class Day23 : Day<Elf[]>
 
         for (var repeat = 1;; repeat++)
         {
-            var blockedVertical = new HashSet<(int, int)>();
-            var blockedHorizontal = new HashSet<(int, int)>();
-            var adjacent = new HashSet<(int, int)>();
+            var blockedHorizontal = input.SelectMany(elf => new[] {
+                (elf.X, elf.Y - 1),
+                (elf.X, elf.Y),
+                (elf.X, elf.Y + 1)
+            }).ToHashSet();
 
-            foreach (var elf in input)
+            var blockedVertical = input.SelectMany(elf => new[] {
+                (elf.X - 1, elf.Y),
+                (elf.X, elf.Y),
+                (elf.X + 1, elf.Y)
+            }).ToHashSet();
+
+            var adjacent = input.SelectMany(elf => new[]
             {
-                blockedHorizontal.Add((elf.X, elf.Y - 1));
-                blockedHorizontal.Add((elf.X, elf.Y));
-                blockedHorizontal.Add((elf.X, elf.Y + 1));
+                (elf.X - 1, elf.Y - 1),
+                (elf.X - 1, elf.Y),
+                (elf.X - 1, elf.Y + 1),
+                (elf.X, elf.Y - 1),
+                (elf.X, elf.Y + 1),
+                (elf.X + 1, elf.Y - 1),
+                (elf.X + 1, elf.Y),
+                (elf.X + 1, elf.Y + 1)
+            }).ToHashSet();
 
-                blockedVertical.Add((elf.X - 1, elf.Y));
-                blockedVertical.Add((elf.X, elf.Y));
-                blockedVertical.Add((elf.X + 1, elf.Y));
-
-                adjacent.Add((elf.X - 1, elf.Y - 1));
-                adjacent.Add((elf.X - 1, elf.Y));
-                adjacent.Add((elf.X - 1, elf.Y + 1));
-
-                adjacent.Add((elf.X, elf.Y - 1));
-                adjacent.Add((elf.X, elf.Y + 1));
-
-                adjacent.Add((elf.X + 1, elf.Y - 1));
-                adjacent.Add((elf.X + 1, elf.Y));
-                adjacent.Add((elf.X + 1, elf.Y + 1));
-            }
-
-            var newLocations = new Dictionary<(int x, int y), List<Elf>>();
+            var proposedLocations = new Dictionary<(int x, int y), List<Elf>>();
 
             foreach (var elf in input)
             {
@@ -69,7 +67,7 @@ public class Day23 : Day<Elf[]>
                 for (var i = 0; i < 4; i++)
                 {
                     var direction = (firstDirection + i) % 4;
-                    var nextLocation = direction switch
+                    var location = direction switch
                     {
                         0 => (elf.X, elf.Y - 1),
                         1 => (elf.X, elf.Y + 1),
@@ -78,20 +76,20 @@ public class Day23 : Day<Elf[]>
                     };
 
                     var isVertical = direction == 0 || direction == 1;
-                    if (isVertical && blockedVertical.Contains(nextLocation)) continue;
-                    if (!isVertical && blockedHorizontal.Contains(nextLocation)) continue;
+                    if (isVertical && blockedVertical.Contains(location)) continue;
+                    if (!isVertical && blockedHorizontal.Contains(location)) continue;
 
-                    if (!newLocations.ContainsKey(nextLocation))
+                    if (!proposedLocations.ContainsKey(location))
                     {
-                        newLocations[nextLocation] = new List<Elf>();
+                        proposedLocations[location] = new List<Elf>();
                     }
 
-                    newLocations[nextLocation].Add(elf);
+                    proposedLocations[location].Add(elf);
                     break;
                 }
             }
 
-            var moves = newLocations.Where(x => x.Value.Count() == 1);
+            var moves = proposedLocations.Where(x => x.Value.Count == 1);
 
             if (!moves.Any()) return repeat;
 
