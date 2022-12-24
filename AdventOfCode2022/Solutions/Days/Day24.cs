@@ -19,14 +19,14 @@ public class Day24 : Day<Blizzard[]>
 
         var blizzards = new List<Blizzard>();
 
-        for (var y = 0; y < inputArray.Length; y ++)
-        for (var x = 0; x < inputArray.First().Length; x++)
-        {
-            if (inputArray[y][x] is '>' or '<' or 'v' or '^')
+        for (var y = 0; y < inputArray.Length; y++)
+            for (var x = 0; x < inputArray.First().Length; x++)
             {
+                if (inputArray[y][x] is '>' or '<' or 'v' or '^')
+                {
                     blizzards.Add(new Blizzard { Direction = inputArray[y][x], X = x - 1, Y = y - 1 });
+                }
             }
-        }
 
         return blizzards.ToArray();
     }
@@ -43,18 +43,32 @@ public class Day24 : Day<Blizzard[]>
 
         var visited = new List<(int cycleTime, int x, int y)>();
 
-        var start = (0, -1);
-        var target = (width - 1, length - 1);
+        ((int x, int y) from, (int x, int y) to)[] journeys =
+        {
+            ((0, -1), (width - 1, length - 1)),
+            ((width - 1, length), (0, 0)),
+            ((0, -1), (width - 1, length - 1)),
+        };
 
-        var lastPositions = new (int x, int y)[] { start };
+        var journey = 0;
 
         var time = 0;
 
-        while(true)
+        var lastPositions = new (int x, int y)[] { journeys[journey].from };
+
+        while (true)
         {
             time++;
 
-            if (lastPositions.Any(x => x == target)) return time;
+            if (lastPositions.Any(x => x == journeys[journey].to))
+            {
+                journey++;
+                if (journey == journeys.Length) return time;
+
+                visited.Clear();
+
+                lastPositions = new (int x, int y)[] { journeys[journey].from };
+            }
 
             foreach (var blizzard in input)
             {
@@ -78,8 +92,8 @@ public class Day24 : Day<Blizzard[]>
             }
 
             var nextPositions = lastPositions.SelectMany(pos =>
-                {
-                    var adjacent = new (int x, int y)[] {
+            {
+                var adjacent = new (int x, int y)[] {
                         (pos.x - 1, pos.y),
                         (pos.x, pos.y - 1),
                         (pos.x, pos.y),
@@ -87,10 +101,10 @@ public class Day24 : Day<Blizzard[]>
                         (pos.x, pos.y + 1)
                     };
 
-                    return adjacent.Where(p => (p.x >= 0 && p.y >= 0 && p.x < width && p.y < length) || p == start)
-                        .Where(p => p == start || numBlizzards[p.x, p.y] == 0)
-                        .Where(p => !visited.Contains((time % weatherCycleLength, p.x, p.y)));
-                })
+                return adjacent.Where(p => (p.x >= 0 && p.y >= 0 && p.x < width && p.y < length) || p == journeys[journey].from)
+                    .Where(p => p == journeys[journey].from || numBlizzards[p.x, p.y] == 0)
+                    .Where(p => !visited.Contains((time % weatherCycleLength, p.x, p.y)));
+            })
                 .Distinct()
                 .ToArray();
 
